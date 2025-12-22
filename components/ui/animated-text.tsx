@@ -1,6 +1,6 @@
+import * as React from "react"
 import { motion } from "framer-motion"
 import { ANIMATION } from "@/lib/constants"
-import { cn } from "@/lib/utils"
 
 interface AnimatedTextProps {
   children: React.ReactNode
@@ -25,7 +25,7 @@ export function AnimatedText({
         ease: ANIMATION.EASING.SMOOTH 
       }}
     >
-      <Component className={className}>{children}</Component>
+      {React.createElement(Component, { className }, children)}
     </motion.div>
   )
 }

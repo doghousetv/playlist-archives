@@ -4,7 +4,7 @@ import { useState } from "react"
 import { Plus } from "lucide-react"
 import PlaylistGrid from "./playlist-grid"
 import AddPlaylistDialog from "./add-playlist-dialog"
-import { Section, SectionHeader, SectionTitle, Container, AnimatedTextInView, Button } from "./ui"
+import { Section, SectionHeader, SectionTitle, Container, AnimatedTextInView, Button } from "@/components/ui"
 import { ANIMATION } from "@/lib/constants"
 
 export default function ArchiveSection() {

@@ -59,17 +59,17 @@ export function SectionTitle({ children, as: Component = "h2", className, ...pro
     h3: "text-2xl md:text-3xl",
   }
 
-  return (
-    <Component
-      className={cn(
+  return React.createElement(
+    Component,
+    {
+      className: cn(
         "font-light tracking-tight text-black dark:text-white",
         sizes[Component],
         className
-      )}
-      {...props}
-    >
-      {children}
-    </Component>
+      ),
+      ...props,
+    },
+    children
   )
 }
 
