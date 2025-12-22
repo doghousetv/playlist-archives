@@ -49,7 +49,7 @@ export default function AddPlaylistDialog({ open, onOpenChange }: AddPlaylistDia
               {/* Close button */}
               <button
                 onClick={() => onOpenChange(false)}
-                className="absolute top-6 right-6 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors"
+                className="absolute top-6 right-6 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -89,7 +89,7 @@ export default function AddPlaylistDialog({ open, onOpenChange }: AddPlaylistDia
 
                 <button
                   type="submit"
-                  className="w-full bg-black dark:bg-white hover:bg-black/90 dark:hover:bg-white/90 text-white dark:text-black font-medium py-3.5 rounded-lg transition-all duration-300"
+                  className="w-full bg-black dark:bg-white hover:bg-black/90 dark:hover:bg-white/90 text-white dark:text-black font-medium py-3.5 rounded-lg transition-all duration-300 cursor-pointer"
                 >
                   Add to Archive
                 </button>

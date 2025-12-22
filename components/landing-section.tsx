@@ -111,7 +111,7 @@ export default function LandingSection() {
         >
           <button
             onClick={handleScrollToArchive}
-            className="group relative inline-flex items-center gap-3 px-10 py-5 bg-black dark:bg-white text-white dark:text-black text-sm font-medium rounded-full hover:bg-black/90 dark:hover:bg-white/90 transition-all duration-500 hover:gap-4 hover:shadow-xl hover:shadow-black/10 dark:hover:shadow-white/10"
+            className="group relative inline-flex items-center gap-3 px-10 py-5 bg-black dark:bg-white text-white dark:text-black text-sm font-medium rounded-full hover:bg-black/90 dark:hover:bg-white/90 transition-all duration-500 hover:gap-4 hover:shadow-xl hover:shadow-black/10 dark:hover:shadow-white/10 cursor-pointer"
           >
             <span>Explore</span>
             <ArrowDown className="w-4 h-4" />

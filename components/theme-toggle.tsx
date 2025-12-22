@@ -25,7 +25,7 @@ export default function ThemeToggle() {
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.5, delay: 0.8 }}
       onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-      className="absolute top-6 right-6 z-50 w-10 h-10 rounded-full bg-black/5 hover:bg-black/10 dark:bg-white/5 dark:hover:bg-white/10 backdrop-blur-sm border border-black/10 dark:border-white/10 flex items-center justify-center transition-all duration-300 hover:scale-110"
+      className="absolute top-6 right-6 z-50 w-10 h-10 rounded-full bg-black/5 hover:bg-black/10 dark:bg-white/5 dark:hover:bg-white/10 backdrop-blur-sm border border-black/10 dark:border-white/10 flex items-center justify-center transition-all duration-300 hover:scale-110 cursor-pointer"
       aria-label="Toggle theme"
     >
       {theme === "light" ? (
