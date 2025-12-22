@@ -1,9 +1,9 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { Music2 } from "lucide-react"
 import { ANIMATION } from "@/lib/constants"
 import type { PlaylistCardProps } from "@/types/playlist"
+import { PlaylistCover3D } from "@/components/cover-art"
 
 export default function PlaylistCard({ playlist, index }: PlaylistCardProps) {
   return (
@@ -19,40 +19,15 @@ export default function PlaylistCard({ playlist, index }: PlaylistCardProps) {
       className="group cursor-pointer"
     >
       <div className="relative bg-white dark:bg-neutral-800 rounded-xl p-3 border border-black/5 dark:border-white/5 hover:border-black/10 dark:hover:border-white/10 transition-all duration-500 hover:shadow-lg shadow-sm">
-        {/* Playlist Cover */}
-        <div
-          className={`aspect-square rounded-lg bg-gradient-to-br ${playlist.gradient} relative overflow-hidden mb-3`}
-        >
-          {/* Overlay effect on hover */}
-          <motion.div
-            className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-all duration-500"
-            initial={false}
-          />
-
-          {/* Music icon */}
-          <div className="absolute inset-0 flex items-center justify-center">
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0.2 }}
-              whileHover={{ scale: 1, opacity: 0.4 }}
-              transition={{ 
-                duration: ANIMATION.DURATION.NORMAL, 
-                ease: ANIMATION.EASING.SMOOTH 
-              }}
-            >
-              <Music2 className="w-10 h-10 text-white/60" strokeWidth={1.5} />
-            </motion.div>
+        {/* Playlist Cover - 3D Parallax */}
+        <div className="aspect-square relative mb-3">
+          <div className="w-full h-full rounded-lg">
+            <PlaylistCover3D
+              coverImage={playlist.coverImage}
+              gradient={playlist.gradient}
+              title={playlist.title}
+            />
           </div>
-
-          {/* Subtle shine effect */}
-          <motion.div
-            className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/20 to-transparent opacity-0 group-hover:opacity-100"
-            initial={{ x: "-100%", y: "-100%" }}
-            whileHover={{ x: "100%", y: "100%" }}
-            transition={{ 
-              duration: ANIMATION.DURATION.VERY_SLOW, 
-              ease: ANIMATION.EASING.EASE_IN_OUT 
-            }}
-          />
         </div>
 
         {/* Playlist Info */}
