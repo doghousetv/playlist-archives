@@ -1,7 +1,4 @@
-// ** React/Next.js Imports
 import React from "react";
-
-// ** Third-Party Imports
 import PropTypes from "prop-types";
 
 export default class ParallaxCard extends React.Component {
@@ -48,7 +45,6 @@ export default class ParallaxCard extends React.Component {
         }
       }
       
-      // Attach event listeners to containerRef if provided
       if (this.props.containerRef?.current) {
         const container = this.props.containerRef.current;
         this.containerMouseMove = (e) => {
@@ -86,14 +82,12 @@ export default class ParallaxCard extends React.Component {
   handleMove = ({ pageX, pageY }) => {
     if (this.props.isStatic) return;
     
-    // Use containerRef if provided, otherwise use local node
     const targetNode = this.props.containerRef?.current || this.node;
     if (!targetNode) return;
     
     const layerCount = this.state.layers ? this.state.layers.length : 1;
     let { rootElemWidth, rootElemHeight } = this.state;
     
-    // Recalculate dimensions if not set or if they're 0
     if (!rootElemWidth || !rootElemHeight) {
       rootElemWidth = targetNode.clientWidth || targetNode.offsetWidth || targetNode.scrollWidth;
       rootElemHeight = targetNode.clientHeight || targetNode.offsetHeight || targetNode.scrollHeight;
@@ -120,15 +114,11 @@ export default class ParallaxCard extends React.Component {
     const rawAngle = (arad * 180) / Math.PI - 90;
     const angle = rawAngle < 0 ? rawAngle + 360 : rawAngle;
 
-    // Only apply subtle hover effects without changing the base parallelogram shape
-    // Keep the base rotateY(15deg) constant and only add minimal additional rotations
     this.setState({
       container: {
-        // Only add very subtle rotations on top of the base rotateY(15deg)
-        // These will be combined in the render method
-        additionalRotateX: xRotate * 0.3, // Reduce intensity
-        additionalRotateY: yRotate * 0.3, // Reduce intensity
-        scale: 1.05, // Scale on hover
+        additionalRotateX: xRotate * 0.3,
+        additionalRotateY: yRotate * 0.3,
+        scale: 1.05,
       },
       shine: {
         background: `linear-gradient(${angle}deg, rgba(255, 255, 255, ${
@@ -192,28 +182,25 @@ export default class ParallaxCard extends React.Component {
           ...this.props.style,
         }}
       >
-        {this.state.layersTransform &&
-          React.Children.map(this.state.layers, (child, idx) =>
-            React.cloneElement(child, {
-              style: {
-                ...child.props.style,
-                transition: "all 0.1s ease-out",
-                zIndex: "4",
-                ...(this.state.layersTransform[idx]
-                  ? this.state.layersTransform[idx]
-                  : {}),
-              },
-            })
-          )}
-        ;
+        {React.Children.map(this.state.layers, (child, idx) =>
+          React.cloneElement(child, {
+            style: {
+              ...child.props.style,
+              transition: "all 0.1s ease-out",
+              zIndex: "4",
+              ...(this.state.layersTransform[idx]
+                ? this.state.layersTransform[idx]
+                : {}),
+            },
+          })
+        )}
       </div>
     );
   };
 
   render() {
     const perspectiveValue = this.state.rootElemWidth > 0 ? this.state.rootElemWidth * 3 : 1000;
-    // If containerRef is provided, attach events to it via useEffect-like behavior
-    // For now, we'll use the containerRef for calculations but keep events on this element
+    const useReactHandlers = !this.props.containerRef && !this.props.isStatic;
     
     return (
       <div 
@@ -224,14 +211,14 @@ export default class ParallaxCard extends React.Component {
           perspective: `${perspectiveValue}px`,
           perspectiveOrigin: "center center"
         }}
-        onMouseMove={this.props.isStatic ? undefined : (e) => {
+        onMouseMove={useReactHandlers ? (e) => {
           this.handleMove({ pageX: e.pageX, pageY: e.pageY });
-        }}
-        onMouseEnter={this.props.isStatic ? undefined : this.handleEnter}
-        onMouseLeave={this.props.isStatic ? undefined : this.handleLeave}
-        onTouchMove={this.props.isStatic ? undefined : this.handleTouchMove}
-        onTouchStart={this.props.isStatic ? undefined : this.handleEnter}
-        onTouchEnd={this.props.isStatic ? undefined : this.handleLeave}
+        } : undefined}
+        onMouseEnter={useReactHandlers ? this.handleEnter : undefined}
+        onMouseLeave={useReactHandlers ? this.handleLeave : undefined}
+        onTouchMove={useReactHandlers ? this.handleTouchMove : undefined}
+        onTouchStart={useReactHandlers ? this.handleEnter : undefined}
+        onTouchEnd={useReactHandlers ? this.handleLeave : undefined}
         ref={(node) => {
           this.node = node;
         }}
@@ -257,8 +244,6 @@ export default class ParallaxCard extends React.Component {
               height: "100%",
               borderRadius: this.props.borderRadius,
               transition: "all 0.2s ease-out",
-              // Always maintain base rotateY(15deg) for parallelogram shape
-              // Only add subtle hover rotations if not static
               transform: this.props.isStatic 
                 ? "rotateY(15deg)"
                 : `rotateY(${15 + (this.state.container?.additionalRotateY || 0)}deg) rotateX(${this.state.container?.additionalRotateX || 0}deg) scale(${this.state.container?.scale || 1})`,

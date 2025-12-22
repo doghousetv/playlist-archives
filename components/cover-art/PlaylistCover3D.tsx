@@ -16,7 +16,6 @@ export default function PlaylistCover3D({
   gradient,
   title,
 }: PlaylistCover3DProps) {
-  // Type guard: Check if coverImage exists and is not empty
   const hasCoverImage = coverImage && coverImage.trim().length > 0
   const containerRef = useRef<HTMLDivElement>(null)
 
@@ -67,7 +66,6 @@ export default function PlaylistCover3D({
                 position: "relative",
               }}
             >
-              {/* Show music icon only when there's no cover image */}
               {!hasCoverImage && (
                 <div className="absolute inset-0 flex items-center justify-center">
                   <Music2 className="w-10 h-10 text-white/60" strokeWidth={1.5} />
