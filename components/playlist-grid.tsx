@@ -62,9 +62,12 @@ export default function PlaylistGrid() {
     <div className="px-6 pb-20">
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3 md:gap-4">
-          {playlists.map((playlist, index) => (
-            <PlaylistCard key={playlist.id} playlist={playlist} index={index} />
-          ))}
+          {playlists.map((playlist, index) => {
+            const relativeIndex = index % 24
+            return (
+              <PlaylistCard key={playlist.id} playlist={playlist} index={relativeIndex} />
+            )
+          })}
         </div>
 
         {/* Loading indicator */}
