@@ -52,3 +52,65 @@ export function debounce<T extends (...args: any[]) => any>(
   }
 }
 
+/**
+ * Validate playlist URL for Spotify or Apple Music
+ * @param url - The URL to validate
+ * @returns Object with isValid boolean and error message if invalid
+ */
+export function validatePlaylistUrl(url: string): { isValid: boolean; error?: string } {
+  if (!url || url.trim() === "") {
+    return { isValid: false, error: "Please enter a playlist URL" }
+  }
+
+  try {
+    const urlObj = new URL(url.trim())
+    const hostname = urlObj.hostname.toLowerCase()
+    const pathname = urlObj.pathname.toLowerCase()
+
+    // Check if URL contains "playlist" in the path
+    if (!pathname.includes("playlist")) {
+      return {
+        isValid: false,
+        error: "This doesn't look like a playlist",
+      }
+    }
+
+    // Validate Spotify playlist URL
+    // Format: https://open.spotify.com/playlist/...
+    if (hostname === "open.spotify.com") {
+      const spotifyPlaylistPattern = /^\/playlist\/[^/]+/
+      if (spotifyPlaylistPattern.test(pathname)) {
+        return { isValid: true }
+      }
+      return {
+        isValid: false,
+        error: "This doesn't look like a Spotify playlist",
+      }
+    }
+
+    // Validate Apple Music playlist URL
+    // Format: https://music.apple.com/.../playlist/...
+    if (hostname === "music.apple.com") {
+      const applePlaylistPattern = /\/playlist\/[^/]+/
+      if (applePlaylistPattern.test(pathname)) {
+        return { isValid: true }
+      }
+      return {
+        isValid: false,
+        error: "This doesn't look like an Apple Music playlist",
+      }
+    }
+
+    // If domain doesn't match Spotify or Apple Music
+    return {
+      isValid: false,
+      error: "We currently don't support playlists from this platform",
+    }
+  } catch {
+    return {
+      isValid: false,
+      error: "This doesn't look like a playlist",
+    }
+  }
+}
+
