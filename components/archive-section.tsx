@@ -2,8 +2,8 @@
 
 import { useState } from "react"
 import { Plus } from "lucide-react"
-import PlaylistGrid from "./playlist-grid"
-import AddPlaylistDialog from "./add-playlist-dialog"
+import PlaylistGrid from "@/components/playlist-grid"
+import PlaylistDialog from "@/components/playlist-dialog"
 import { Section, SectionHeader, SectionTitle, Container, AnimatedTextInView, Button } from "@/components/ui"
 import { ANIMATION } from "@/lib/constants"
 
@@ -45,7 +45,7 @@ export default function ArchiveSection() {
         <PlaylistGrid />
 
         {/* Add Playlist Dialog */}
-        <AddPlaylistDialog open={isDialogOpen} onOpenChange={setIsDialogOpen} />
+        <PlaylistDialog open={isDialogOpen} onOpenChange={setIsDialogOpen} />
       </div>
     </Section>
   )

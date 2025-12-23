@@ -22,6 +22,11 @@ export default function PlaylistCard({ playlist, index }: PlaylistCardProps) {
     setMousePosition({ pageX: e.pageX, pageY: e.pageY })
   }
 
+  const handleClick = () => {
+    // Handle playlist card click
+    console.log("Playlist clicked:", playlist.id)
+  }
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -35,10 +40,14 @@ export default function PlaylistCard({ playlist, index }: PlaylistCardProps) {
       whileHover={{
         scale: 1.05,
       }}
+      whileTap={{
+        scale: 0.9,
+      }}
       className="group cursor-pointer"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       onMouseMove={handleMouseMove}
+      onClick={handleClick}
     >
       <div className="relative bg-white dark:bg-neutral-800 rounded-xl p-3 border border-black/5 dark:border-white/20 group-hover:border-black/10 dark:group-hover:border-white/30 transition-all duration-300 shadow-sm group-hover:shadow-lg dark:group-hover:shadow-[0_8px_32px_0_rgba(255,255,255,0.15)]">
         {/* Playlist Cover - 3D Parallax */}

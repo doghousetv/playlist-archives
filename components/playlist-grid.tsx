@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useRef, useCallback } from "react"
-import PlaylistCard from "./playlist-card"
+import PlaylistCard from "@/components/playlist-card"
 import { LoadingSpinner } from "@/components/ui"
 import { generateMockPlaylists } from "@/lib/utils"
 import { PLAYLIST_GRADIENTS } from "@/lib/constants"

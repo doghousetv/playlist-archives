@@ -5,18 +5,30 @@ import type React from "react"
 import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { X, Music, ExternalLink } from "lucide-react"
+import { validatePlaylistUrl } from "@/lib/utils"
 
-interface AddPlaylistDialogProps {
-  open: boolean
-  onOpenChange: (open: boolean) => void
+interface PlaylistDialogProps {
+  readonly open: boolean
+  readonly onOpenChange: (open: boolean) => void
 }
 
-export default function AddPlaylistDialog({ open, onOpenChange }: AddPlaylistDialogProps) {
+export default function PlaylistDialog({ open, onOpenChange }: PlaylistDialogProps) {
   const [url, setUrl] = useState("")
+  const [error, setError] = useState<string | null>(null)
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    // Handle playlist submission
+    
+    // Validate the URL
+    const validation = validatePlaylistUrl(url)
+    
+    if (!validation.isValid) {
+      setError(validation.error || "Invalid playlist URL")
+      return
+    }
+
+    // Clear error and handle playlist submission
+    setError(null)
     console.log("Playlist URL:", url)
     setUrl("")
     onOpenChange(false)
@@ -78,13 +90,24 @@ export default function AddPlaylistDialog({ open, onOpenChange }: AddPlaylistDia
                       id="playlist-url"
                       type="url"
                       value={url}
-                      onChange={(e) => setUrl(e.target.value)}
+                      onChange={(e) => {
+                        setUrl(e.target.value)
+                        // Clear error when user starts typing
+                        if (error) setError(null)
+                      }}
                       placeholder="https://open.spotify.com/playlist/..."
-                      className="w-full px-4 py-3 bg-black/[0.02] dark:bg-white/[0.02] border border-black/10 dark:border-white/10 rounded-lg text-black dark:text-white placeholder:text-black/30 dark:placeholder:text-white/30 focus:outline-none focus:border-black/20 dark:focus:border-white/20 transition-colors"
+                      className={`w-full px-4 py-3 bg-black/[0.02] dark:bg-white/[0.02] border rounded-lg text-black dark:text-white placeholder:text-black/30 dark:placeholder:text-white/30 focus:outline-none transition-colors ${
+                        error
+                          ? "border-red-500/50 dark:border-red-500/50 focus:border-red-500 dark:focus:border-red-500"
+                          : "border-black/10 dark:border-white/10 focus:border-black/20 dark:focus:border-white/20"
+                      }`}
                       required
                     />
                     <ExternalLink className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-black/20 dark:text-white/20" />
                   </div>
+                  {error && (
+                    <p className="mt-2 text-sm text-red-500 dark:text-red-400">{error}</p>
+                  )}
                 </div>
 
                 <button
