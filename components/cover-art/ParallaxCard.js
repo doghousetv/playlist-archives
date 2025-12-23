@@ -8,6 +8,8 @@ export default class ParallaxCard extends React.Component {
     shineStrength: PropTypes.number,
     cursorPointer: PropTypes.bool,
     containerRef: PropTypes.object,
+    isHovered: PropTypes.bool,
+    mousePosition: PropTypes.object,
   };
 
   static defaultProps = {
@@ -15,6 +17,8 @@ export default class ParallaxCard extends React.Component {
     borderRadius: "12px",
     shineStrength: 0.4,
     cursorPointer: true,
+    isHovered: undefined,
+    mousePosition: undefined,
   };
 
   state = {
@@ -33,7 +37,7 @@ export default class ParallaxCard extends React.Component {
 
   componentDidMount = () => {
     if (!this.props.isStatic) {
-      const targetNode = this.props.containerRef?.current || this.node;
+      const targetNode = this.node;
       if (targetNode) {
         const width = targetNode.clientWidth || targetNode.offsetWidth || targetNode.scrollWidth;
         const height = targetNode.clientHeight || targetNode.offsetHeight || targetNode.scrollHeight;
@@ -45,36 +49,62 @@ export default class ParallaxCard extends React.Component {
         }
       }
       
-      if (this.props.containerRef?.current) {
-        const container = this.props.containerRef.current;
-        this.containerMouseMove = (e) => {
+      if (this.props.isHovered === undefined && this.node) {
+        this.nodeMouseMove = (e) => {
           this.handleMove({ pageX: e.pageX, pageY: e.pageY });
         };
-        this.containerMouseEnter = () => {
+        this.nodeMouseEnter = () => {
           this.handleEnter();
         };
-        this.containerMouseLeave = () => {
+        this.nodeMouseLeave = () => {
           this.handleLeave();
         };
         
-        container.addEventListener('mousemove', this.containerMouseMove);
-        container.addEventListener('mouseenter', this.containerMouseEnter);
-        container.addEventListener('mouseleave', this.containerMouseLeave);
+        this.node.addEventListener('mousemove', this.nodeMouseMove);
+        this.node.addEventListener('mouseenter', this.nodeMouseEnter);
+        this.node.addEventListener('mouseleave', this.nodeMouseLeave);
+      }
+    }
+  };
+
+  componentDidUpdate = (prevProps) => {
+    if (this.props.isHovered !== undefined && !this.props.isStatic) {
+      const wasHovered = prevProps.isHovered !== undefined ? prevProps.isHovered : this.state.isOnHover;
+      const isNowHovered = this.props.isHovered;
+      
+      if (isNowHovered && !wasHovered) {
+        this.setState({ isOnHover: true });
+      } else if (!isNowHovered && wasHovered) {
+        this.setState({
+          isOnHover: false,
+          container: {
+            additionalRotateX: 0,
+            additionalRotateY: 0,
+            scale: 1,
+          },
+          shine: {},
+          layersTransform: [],
+        });
+      }
+      
+      if (this.props.mousePosition && isNowHovered && 
+          (this.props.mousePosition.pageX !== prevProps.mousePosition?.pageX || 
+           this.props.mousePosition.pageY !== prevProps.mousePosition?.pageY)) {
+        this.handleMove(this.props.mousePosition);
       }
     }
   };
 
   componentWillUnmount = () => {
-    if (this.props.containerRef?.current && !this.props.isStatic) {
-      const container = this.props.containerRef.current;
-      if (this.containerMouseMove) {
-        container.removeEventListener('mousemove', this.containerMouseMove);
+    if (this.node && !this.props.isStatic) {
+      if (this.nodeMouseMove) {
+        this.node.removeEventListener('mousemove', this.nodeMouseMove);
       }
-      if (this.containerMouseEnter) {
-        container.removeEventListener('mouseenter', this.containerMouseEnter);
+      if (this.nodeMouseEnter) {
+        this.node.removeEventListener('mouseenter', this.nodeMouseEnter);
       }
-      if (this.containerMouseLeave) {
-        container.removeEventListener('mouseleave', this.containerMouseLeave);
+      if (this.nodeMouseLeave) {
+        this.node.removeEventListener('mouseleave', this.nodeMouseLeave);
       }
     }
   };
@@ -82,7 +112,7 @@ export default class ParallaxCard extends React.Component {
   handleMove = ({ pageX, pageY }) => {
     if (this.props.isStatic) return;
     
-    const targetNode = this.props.containerRef?.current || this.node;
+    const targetNode = this.node;
     if (!targetNode) return;
     
     const layerCount = this.state.layers ? this.state.layers.length : 1;
@@ -149,21 +179,27 @@ export default class ParallaxCard extends React.Component {
 
   handleEnter = () => {
     if (this.props.isStatic) return;
-    this.setState({ isOnHover: true });
+
+    if (this.props.isHovered === undefined) {
+      this.setState({ isOnHover: true });
+    }
   };
 
   handleLeave = () => {
     if (this.props.isStatic) return;
-    this.setState({
-      isOnHover: false,
-      container: {
-        additionalRotateX: 0,
-        additionalRotateY: 0,
-        scale: 1,
-      },
-      shine: {},
-      layersTransform: [],
-    });
+
+    if (this.props.isHovered === undefined) {
+      this.setState({
+        isOnHover: false,
+        container: {
+          additionalRotateX: 0,
+          additionalRotateY: 0,
+          scale: 1,
+        },
+        shine: {},
+        layersTransform: [],
+      });
+    }
   };
 
   renderLayers = () => {
@@ -200,7 +236,8 @@ export default class ParallaxCard extends React.Component {
 
   render() {
     const perspectiveValue = this.state.rootElemWidth > 0 ? this.state.rootElemWidth * 3 : 1000;
-    const useReactHandlers = !this.props.containerRef && !this.props.isStatic;
+    // Use external hover state if provided, otherwise use internal state
+    const isHovered = this.props.isHovered !== undefined ? this.props.isHovered : this.state.isOnHover;
     
     return (
       <div 
@@ -209,16 +246,9 @@ export default class ParallaxCard extends React.Component {
           width: "100%", 
           height: "100%", 
           perspective: `${perspectiveValue}px`,
-          perspectiveOrigin: "center center"
+          perspectiveOrigin: "center center",
+          pointerEvents: "auto"
         }}
-        onMouseMove={useReactHandlers ? (e) => {
-          this.handleMove({ pageX: e.pageX, pageY: e.pageY });
-        } : undefined}
-        onMouseEnter={useReactHandlers ? this.handleEnter : undefined}
-        onMouseLeave={useReactHandlers ? this.handleLeave : undefined}
-        onTouchMove={useReactHandlers ? this.handleTouchMove : undefined}
-        onTouchStart={useReactHandlers ? this.handleEnter : undefined}
-        onTouchEnd={useReactHandlers ? this.handleLeave : undefined}
         ref={(node) => {
           this.node = node;
         }}
@@ -232,7 +262,7 @@ export default class ParallaxCard extends React.Component {
             transformStyle: "preserve-3d",
             WebkitTapHighlightColor: "rgba(0, 0, 0, 0)",
             cursor: this.props.cursorPointer ? "pointer" : "default",
-            zIndex: this.state.isOnHover ? "9" : "unset",
+            zIndex: isHovered ? "9" : "unset",
           }}
           className='parallax-card'
         >
@@ -259,7 +289,7 @@ export default class ParallaxCard extends React.Component {
                 bottom: "5%",
                 transition: "all 0.2s ease-out",
                 zIndex: "0",
-                boxShadow: this.state.isOnHover
+                boxShadow: isHovered
                   ? "0 45px 100px rgba(14, 21, 47, 0.4), 0 16px 40px rgba(14, 21, 47, 0.4)"
                   : "0 8px 30px rgba(14, 21, 47, 0.6)",
               }}
