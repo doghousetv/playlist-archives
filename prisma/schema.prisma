@@ -1,0 +1,22 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model Playlist {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  url        String   @unique
+  platform   String
+  title      String?
+  curator    String?
+  coverImage String?
+  gradient   String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
