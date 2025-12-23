@@ -6,15 +6,17 @@ import { Music2 } from "lucide-react"
 import ParallaxCard from "./ParallaxCard.js"
 
 interface PlaylistCover3DProps {
-  coverImage?: string
-  gradient: string
-  title: string
+  readonly coverImage?: string
+  readonly gradient: string
+  readonly isHovered?: boolean
+  readonly mousePosition?: { pageX: number; pageY: number }
 }
 
 export default function PlaylistCover3D({
   coverImage,
   gradient,
-  title,
+  isHovered = false,
+  mousePosition,
 }: PlaylistCover3DProps) {
   const hasCoverImage = coverImage && coverImage.trim().length > 0
   const containerRef = useRef<HTMLDivElement>(null)
@@ -39,7 +41,7 @@ export default function PlaylistCover3D({
         }}
         style={{
           transformStyle: "preserve-3d",
-          pointerEvents: "none",
+          pointerEvents: "auto",
         }}
       >
         <div style={{ width: "100%", height: "100%", pointerEvents: "auto" }}>
@@ -48,7 +50,8 @@ export default function PlaylistCover3D({
             borderRadius="0.5rem"
             shineStrength={0.5}
             cursorPointer={true}
-            containerRef={containerRef}
+            isHovered={isHovered}
+            mousePosition={mousePosition}
             style={{
               width: "100%",
               height: "100%",
