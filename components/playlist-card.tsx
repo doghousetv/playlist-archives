@@ -23,8 +23,9 @@ export default function PlaylistCard({ playlist, index }: PlaylistCardProps) {
   }
 
   const handleClick = () => {
-    // Handle playlist card click
-    console.log("Playlist clicked:", playlist.id)
+    if (playlist.url) {
+      window.open(playlist.url, "_blank", "noopener,noreferrer")
+    }
   }
 
   return (
@@ -58,6 +59,7 @@ export default function PlaylistCard({ playlist, index }: PlaylistCardProps) {
               gradient={playlist.gradient}
               isHovered={isHovered}
               mousePosition={mousePosition}
+              platform={playlist.platform}
             />
           </div>
         </div>
