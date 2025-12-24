@@ -10,6 +10,8 @@ interface PlaylistCover3DProps {
   readonly gradient: string
   readonly isHovered?: boolean
   readonly mousePosition?: { pageX: number; pageY: number }
+  readonly platform?: "spotify" | "apple-music"
+  readonly children?: React.ReactNode
 }
 
 export default function PlaylistCover3D({
@@ -17,9 +19,12 @@ export default function PlaylistCover3D({
   gradient,
   isHovered = false,
   mousePosition,
+  platform,
+  children,
 }: PlaylistCover3DProps) {
   const hasCoverImage = coverImage && coverImage.trim().length > 0
   const containerRef = useRef<HTMLDivElement>(null)
+  const backgroundSize = platform === "apple-music" ? "280%" : "cover"
 
   return (
     <div 
@@ -59,21 +64,27 @@ export default function PlaylistCover3D({
             }}
           >
             <div
-              className={`w-full h-full bg-gradient-to-br ${gradient}`}
+              className={`bg-gradient-to-br ${gradient}`}
               style={{
-                backgroundImage: hasCoverImage ? `url(${coverImage})` : undefined,
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-                transition: "background-image 0.4s ease-in-out",
                 borderRadius: "0.5rem",
+                overflow: "hidden",
+                width: "100%",
+                height: "100%",
                 position: "relative",
+                backgroundImage: hasCoverImage ? `url(${coverImage})` : undefined,
+                backgroundSize: backgroundSize,
+                backgroundPosition: "center",
+                backgroundRepeat: "no-repeat",
+                minWidth: "100%",
+                minHeight: "100%",
               }}
             >
-              {!hasCoverImage && (
+              {!hasCoverImage && !children && (
                 <div className="absolute inset-0 flex items-center justify-center">
                   <Music2 className="w-10 h-10 text-white/60" strokeWidth={1.5} />
                 </div>
               )}
+              {children}
             </div>
           </ParallaxCard>
         </div>
