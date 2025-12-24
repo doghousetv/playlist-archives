@@ -1,5 +1,6 @@
 import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
+import { PLAYLIST_GRADIENTS } from "@/lib/constants"
 
 /**
  * Merge Tailwind CSS classes with proper precedence
@@ -50,6 +51,39 @@ export function debounce<T extends (...args: any[]) => any>(
     }
     timeout = setTimeout(later, wait)
   }
+}
+
+/**
+ * Extract platform from playlist URL
+ * @param url - The playlist URL
+ * @returns "spotify" | "apple-music" | null
+ */
+export function extractPlatformFromUrl(url: string): "spotify" | "apple-music" | null {
+  try {
+    const urlObj = new URL(url.trim())
+    const hostname = urlObj.hostname.toLowerCase()
+
+    if (hostname === "open.spotify.com") {
+      return "spotify"
+    }
+
+    if (hostname === "music.apple.com") {
+      return "apple-music"
+    }
+
+    return null
+  } catch {
+    return null
+  }
+}
+
+/**
+ * Generate a random gradient from available playlist gradients
+ * @returns A random gradient string
+ */
+export function generateRandomGradient(): string {
+  const randomIndex = Math.floor(Math.random() * PLAYLIST_GRADIENTS.length)
+  return PLAYLIST_GRADIENTS[randomIndex]
 }
 
 /**
