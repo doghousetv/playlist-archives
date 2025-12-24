@@ -4,19 +4,21 @@ import type React from "react"
 
 import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { X, Music, ExternalLink } from "lucide-react"
+import { X, Music, ExternalLink, Loader2 } from "lucide-react"
 import { validatePlaylistUrl } from "@/lib/utils"
 
 interface PlaylistDialogProps {
   readonly open: boolean
   readonly onOpenChange: (open: boolean) => void
+  readonly onPlaylistAdded?: () => void
 }
 
-export default function PlaylistDialog({ open, onOpenChange }: PlaylistDialogProps) {
+export default function PlaylistDialog({ open, onOpenChange, onPlaylistAdded }: PlaylistDialogProps) {
   const [url, setUrl] = useState("")
   const [error, setError] = useState<string | null>(null)
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
     // Validate the URL
@@ -27,11 +29,37 @@ export default function PlaylistDialog({ open, onOpenChange }: PlaylistDialogPro
       return
     }
 
-    // Clear error and handle playlist submission
+    setIsSubmitting(true)
     setError(null)
-    console.log("Playlist URL:", url)
-    setUrl("")
-    onOpenChange(false)
+
+    try {
+      const response = await fetch("/api/playlists/scrape", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ url }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to add playlist")
+      }
+
+      // Success - reset form and close dialog
+      setUrl("")
+      onOpenChange(false)
+      
+      // Notify parent to refresh playlists
+      if (onPlaylistAdded) {
+        onPlaylistAdded()
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to add playlist")
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -112,9 +140,17 @@ export default function PlaylistDialog({ open, onOpenChange }: PlaylistDialogPro
 
                 <button
                   type="submit"
-                  className="w-full bg-black dark:bg-white hover:bg-black/90 dark:hover:bg-white/90 text-white dark:text-black font-medium py-3.5 rounded-lg transition-all duration-300 cursor-pointer"
+                  disabled={isSubmitting}
+                  className="w-full bg-black dark:bg-white hover:bg-black/90 dark:hover:bg-white/90 disabled:opacity-50 disabled:cursor-not-allowed text-white dark:text-black font-medium py-3.5 rounded-lg transition-all duration-300 cursor-pointer flex items-center justify-center gap-2"
                 >
-                  Add to Archive
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      Adding...
+                    </>
+                  ) : (
+                    "Add to Archive"
+                  )}
                 </button>
               </form>
             </motion.div>
