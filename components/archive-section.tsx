@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useRef } from "react"
 import { Plus } from "lucide-react"
 import PlaylistGrid from "@/components/playlist-grid"
 import PlaylistDialog from "@/components/playlist-dialog"
@@ -9,6 +9,7 @@ import { ANIMATION } from "@/lib/constants"
 
 export default function ArchiveSection() {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const refreshKeyRef = useRef(0)
 
   return (
     <Section 
@@ -42,10 +43,19 @@ export default function ArchiveSection() {
         </Container>
 
         {/* Playlist Grid */}
-        <PlaylistGrid />
+        <PlaylistGrid 
+          key={refreshKeyRef.current} 
+          onAddPlaylistClick={() => setIsDialogOpen(true)}
+        />
 
         {/* Add Playlist Dialog */}
-        <PlaylistDialog open={isDialogOpen} onOpenChange={setIsDialogOpen} />
+        <PlaylistDialog 
+          open={isDialogOpen} 
+          onOpenChange={setIsDialogOpen}
+          onPlaylistAdded={() => {
+            refreshKeyRef.current += 1
+          }}
+        />
       </div>
     </Section>
   )
