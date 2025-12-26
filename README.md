@@ -128,6 +128,7 @@ playlist-archives/
 - [Next.js Documentation](https://nextjs.org/docs)
 - [Prisma Documentation](https://www.prisma.io/docs)
 - [MongoDB Documentation](https://docs.mongodb.com)
+- [Vercel Deployment](https://vercel.com/docs)
 
 ## License
 
