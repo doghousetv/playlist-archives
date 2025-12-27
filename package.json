@@ -4,13 +4,15 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "prisma generate && node scripts/post-prisma-generate.js && next build",
+    "build": "next build",
     "start": "next start",
     "lint": "eslint .",
     "lint:fix": "next lint --fix",
     "type-check": "tsc --noEmit",
-    "prisma:generate": "prisma generate && node scripts/post-prisma-generate.js",
-    "prisma:db:push": "prisma db push",
+    "prebuild": "prisma generate && prisma db push",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:db-push": "prisma db push",
     "test:playlist": "tsx scripts/test-playlist.ts"
   },
   "dependencies": {
