@@ -75,7 +75,7 @@ npm run prisma:generate
 npm run prisma:migrate
 
 # Or push schema directly (for prototyping)
-npm run prisma:db:push
+npm run prisma:db-push
 ```
 
 6. **Run the development server**
