@@ -1,6 +1,6 @@
 # Playlist Archives
 
-A modern web application for archiving and browsing playlists from Spotify and Apple Music. The app scrapes playlist metadata (title, curator, cover image) using Open Graph tags and stores them in a MongoDB database.
+A modern web application for archiving and browsing playlists from Spotify and Apple Music. The app scrapes playlist metadata (title, curator, cover image) using Open Graph tags and stores them in Supabase.
 
 ## Features
 
@@ -8,12 +8,12 @@ A modern web application for archiving and browsing playlists from Spotify and A
 - 🖼️ **Cover Art Display**: Shows playlist cover images with 3D parallax effects
 - 🎨 **Gradient Fallbacks**: Generates beautiful gradients when cover images aren't available
 - 📱 **Responsive Design**: Modern, dark-mode enabled UI with smooth animations
-- 💾 **MongoDB Storage**: Persistent storage of playlist metadata using Prisma ORM
+- 💾 **Supabase Storage**: Persistent storage of playlist metadata using Prisma ORM with PostgreSQL
 
 ## Tech Stack
 
 - **Framework**: [Next.js](https://nextjs.org) 16 (App Router)
-- **Database**: MongoDB with [Prisma](https://www.prisma.io) ORM
+- **Database**: [Supabase](https://supabase.com) PostgreSQL with [Prisma](https://www.prisma.io) ORM
 - **Styling**: Tailwind CSS with custom animations
 - **UI Components**: Radix UI primitives
 - **Animations**: Framer Motion, Pixi.js
@@ -23,7 +23,7 @@ A modern web application for archiving and browsing playlists from Spotify and A
 ### Prerequisites
 
 - Node.js 18+ 
-- MongoDB database (local or cloud instance)
+- Supabase
 - npm, yarn, pnpm, or bun
 
 ### Installation
@@ -45,27 +45,40 @@ yarn install
 pnpm install
 ```
 
-3. **Set up environment variables**
+3. **Set up Supabase**
 
-Create a `.env` file in the root directory:
+- Create a new project on [Supabase](https://supabase.com)
+- Go to Project Settings > Database
+- Copy your connection strings
+
+4. **Set up environment variables**
+
+Create a `.env.local` file in the root directory:
 
 ```env
-DATABASE_URL="mongodb://localhost:27017/playlist-archives"
-# or for MongoDB Atlas:
-# DATABASE_URL="mongodb+srv://username:password@cluster.mongodb.net/playlist-archives"
+# Connect to Supabase via connection pooling (for Vercel deployment)
+DATABASE_URL="postgres://[DB-USER].[PROJECT-REF]:[PRISMA-PASSWORD]@aws-0-us-east-1.pooler.supabase.com:6543/postgres?pgbouncer=true"
+
+# Direct connection (for migrations)
+DIRECT_URL="postgres://[DB-USER].[PROJECT-REF]:[PRISMA-PASSWORD]@aws-0-us-east-1.pooler.supabase.com:5432/postgres"
 ```
 
-4. **Set up the database**
+Replace `PROJECT_REF`, `YOUR_PASSWORD`, and `REGION` with your Supabase credentials.
+
+5. **Set up the database**
 
 ```bash
 # Generate Prisma client
 npm run prisma:generate
 
-# Push schema to database
+# Run migrations
+npm run prisma:migrate
+
+# Or push schema directly (for prototyping)
 npm run prisma:db:push
 ```
 
-5. **Run the development server**
+6. **Run the development server**
 
 ```bash
 npm run dev
@@ -104,6 +117,7 @@ Navigate to [http://localhost:3000](http://localhost:3000) to see the app.
 - `npm run lint` - Run ESLint
 - `npm run type-check` - Run TypeScript type checking
 - `npm run prisma:generate` - Generate Prisma client
+- `npm run prisma:migrate` - Run database migrations
 - `npm run prisma:db:push` - Push schema changes to database
 - `npm run test:playlist` - Test playlist scraping functionality
 
@@ -127,7 +141,8 @@ playlist-archives/
 
 - [Next.js Documentation](https://nextjs.org/docs)
 - [Prisma Documentation](https://www.prisma.io/docs)
-- [MongoDB Documentation](https://docs.mongodb.com)
+- [Supabase Documentation](https://supabase.com/docs)
+- [Supabase + Prisma Guide](https://supabase.com/docs/guides/database/prisma)
 - [Vercel Deployment](https://vercel.com/docs)
 
 ## License
