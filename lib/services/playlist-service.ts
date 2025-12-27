@@ -9,7 +9,7 @@ export interface CreatePlaylistInput {
 export interface CreatePlaylistResult {
   success: boolean
   playlist?: {
-    id: string
+    id: number
     url: string
     platform: string
     title: string | null
@@ -82,7 +82,7 @@ export async function createPlaylistEntry(
  * Update playlist with scraped metadata
  */
 export async function updatePlaylistMetadata(
-  playlistId: string,
+  playlistId: number,
   metadata: {
     title?: string | null
     curator?: string | null
@@ -104,7 +104,7 @@ export async function updatePlaylistMetadata(
 /**
  * Scrape and update playlist metadata
  */
-export async function scrapeAndUpdatePlaylist(playlistId: string): Promise<void> {
+export async function scrapeAndUpdatePlaylist(playlistId: number): Promise<void> {
   const playlist = await prisma.playlist.findUnique({
     where: { id: playlistId },
   })
