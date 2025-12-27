@@ -9,9 +9,10 @@
     "lint": "eslint .",
     "lint:fix": "next lint --fix",
     "type-check": "tsc --noEmit",
-    "prebuild": "prisma generate && prisma db push",
+    "postinstall": "prisma generate",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
+    "prisma:deploy": "prisma migrate deploy",
     "prisma:db-push": "prisma db push",
     "test:playlist": "tsx scripts/test-playlist.ts"
   },
