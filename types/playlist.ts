@@ -3,7 +3,7 @@
  */
 
 export interface Playlist {
-  id: number | string
+  id: number
   title: string
   gradient: string
   curator: string
