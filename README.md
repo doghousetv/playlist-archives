@@ -45,27 +45,17 @@ yarn install
 pnpm install
 ```
 
-3. **Set up Supabase**
+3. **Set up environment variables**
 
-- Create a new project on [Supabase](https://supabase.com)
-- Go to Project Settings > Database
-- Copy your connection strings
+Copy the example environment file and configure with your Supabase credentials:
 
-4. **Set up environment variables**
-
-Create a `.env.local` file in the root directory:
-
-```env
-# Connect to Supabase via connection pooling (for Vercel deployment)
-DATABASE_URL="postgres://[DB-USER].[PROJECT-REF]:[PRISMA-PASSWORD]@aws-0-us-east-1.pooler.supabase.com:6543/postgres?pgbouncer=true"
-
-# Direct connection (for migrations)
-DIRECT_URL="postgres://[DB-USER].[PROJECT-REF]:[PRISMA-PASSWORD]@aws-0-us-east-1.pooler.supabase.com:5432/postgres"
+```bash
+cp env.example .env.local
 ```
 
-Replace `PROJECT_REF`, `YOUR_PASSWORD`, and `REGION` with your Supabase credentials.
+Then update `.env.local` with your actual Supabase connection strings from your Supabase project settings.
 
-5. **Set up the database**
+4. **Set up the database**
 
 ```bash
 # Generate Prisma client
@@ -78,7 +68,7 @@ npm run prisma:migrate
 npm run prisma:db-push
 ```
 
-6. **Run the development server**
+5. **Run the development server**
 
 ```bash
 npm run dev
