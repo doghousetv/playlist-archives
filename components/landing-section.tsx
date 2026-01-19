@@ -2,13 +2,29 @@
 
 import { motion } from "framer-motion"
 import { ArrowDown } from "lucide-react"
+import { useEffect, useState } from "react"
 import ThemeToggle from "@/components/theme-toggle"
 import { Section, AnimatedText } from "@/components/ui"
 import { ANIMATION } from "@/lib/constants"
 import { scrollToElement } from "@/lib/utils"
+import AnimatedCounter from "@/components/animated-counter"
 
 export default function LandingSection() {
+  const [totalPlaylists, setTotalPlaylists] = useState<number>(0)
   const handleScrollToArchive = () => scrollToElement("archive-section")
+
+  useEffect(() => {
+    async function fetchPlaylistCount() {
+      try {
+        const response = await fetch("/api/playlists/count")
+        const data = await response.json()
+        setTotalPlaylists(data.count || 0)
+      } catch (error) {
+        console.error("Failed to fetch playlist count:", error)
+      }
+    }
+    fetchPlaylistCount()
+  }, [])
 
   return (
     <Section snap fullHeight className="flex items-center justify-center">
@@ -94,7 +110,7 @@ export default function LandingSection() {
           as="p"
           className="text-base md:text-lg text-black/50 dark:text-white/50 max-w-xl mx-auto mb-12 leading-relaxed"
         >
-          A curated collection of music playlists from people around the world. 
+          A curated collection of music playlists from listeners worldwide. 
           <br className="hidden md:block" />
           Discover, share, and explore new sounds.
         </AnimatedText>
@@ -111,7 +127,7 @@ export default function LandingSection() {
         >
           <button
             onClick={handleScrollToArchive}
-            className="group relative inline-flex items-center gap-3 px-10 py-5 bg-black dark:bg-white text-white dark:text-black text-sm font-medium rounded-full hover:bg-black/90 dark:hover:bg-white/90 transition-all duration-500 hover:gap-4 hover:shadow-xl hover:shadow-black/10 dark:hover:shadow-white/10 cursor-pointer"
+            className="group relative inline-flex items-center gap-3 px-8 py-4 bg-black dark:bg-white text-white dark:text-black text-sm font-medium rounded-full hover:bg-black/90 dark:hover:bg-white/90 transition-all duration-500 hover:gap-4 hover:shadow-xl hover:shadow-black/10 dark:hover:shadow-white/10 cursor-pointer"
           >
             <span>Explore</span>
             <ArrowDown className="w-4 h-4" />
@@ -120,6 +136,27 @@ export default function LandingSection() {
             <div className="absolute inset-0 rounded-full bg-gradient-to-r from-blue-500/0 via-purple-500/0 to-pink-500/0 group-hover:from-blue-500/10 group-hover:via-purple-500/10 group-hover:to-pink-500/10 transition-all duration-500 blur-xl" />
           </button>
         </motion.div>
+
+        {/* Playlist Counter */}
+        <AnimatedText 
+          delay={ANIMATION.DELAY.EXTRA_LONG}
+          as="div"
+          className="mt-16 text-sm md:text-base font-mono tracking-wide"
+        >
+          <span className="text-black/40 dark:text-white/40 tabular-nums">
+            <AnimatedCounter 
+              from={0} 
+              to={totalPlaylists}
+              animationOptions={{
+                duration: ANIMATION.DURATION.VERY_SLOW,
+                ease: "easeOut",
+              }}
+            />
+          </span>
+          <span className="text-black dark:text-white ml-2">
+            playlists shared
+          </span>
+        </AnimatedText>
       </div>
     </Section>
   )
