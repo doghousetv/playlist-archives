@@ -28,7 +28,6 @@ export default function LandingSection() {
 
   return (
     <Section snap fullHeight className="flex items-center justify-center">
-      {/* Theme Toggle - only in hero section */}
       <ThemeToggle />
       {/* Subtle halftone background pattern */}
       <div className="absolute inset-0 opacity-[0.02]">
@@ -111,7 +110,7 @@ export default function LandingSection() {
           className="text-base md:text-lg text-black/50 dark:text-white/50 max-w-xl mx-auto mb-12 leading-relaxed"
         >
           A curated collection of music playlists from listeners worldwide. 
-          <br className="hidden md:block" />
+          <br />
           Discover, share, and explore new sounds.
         </AnimatedText>
 
