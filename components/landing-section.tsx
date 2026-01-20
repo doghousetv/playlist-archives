@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion"
 import { ArrowDown } from "lucide-react"
-import { useEffect, useState } from "react"
+import useSWR from "swr"
 import ThemeToggle from "@/components/theme-toggle"
 import { Section, AnimatedText } from "@/components/ui"
 import { ANIMATION } from "@/lib/constants"
@@ -10,21 +10,9 @@ import { scrollToElement } from "@/lib/utils"
 import AnimatedCounter from "@/components/animated-counter"
 
 export default function LandingSection() {
-  const [totalPlaylists, setTotalPlaylists] = useState<number>(0)
+  const { data } = useSWR<{ count: number }>("/api/playlists/count")
+  const totalPlaylists = data?.count || 0
   const handleScrollToArchive = () => scrollToElement("archive-section")
-
-  useEffect(() => {
-    async function fetchPlaylistCount() {
-      try {
-        const response = await fetch("/api/playlists/count")
-        const data = await response.json()
-        setTotalPlaylists(data.count || 0)
-      } catch (error) {
-        console.error("Failed to fetch playlist count:", error)
-      }
-    }
-    fetchPlaylistCount()
-  }, [])
 
   return (
     <Section snap fullHeight className="flex items-center justify-center">
@@ -147,7 +135,7 @@ export default function LandingSection() {
               from={0} 
               to={totalPlaylists}
               animationOptions={{
-                duration: ANIMATION.DURATION.VERY_SLOW,
+                duration: ANIMATION.DURATION.NORMAL,
                 ease: "easeOut",
               }}
             />
