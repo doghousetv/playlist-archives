@@ -5,7 +5,8 @@ import type React from "react"
 import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { X, Music, ExternalLink, Loader2 } from "lucide-react"
-import { validatePlaylistUrl } from "@/lib/utils"
+import { toast } from "react-toastify"
+import { validatePlaylistUrl, cleanPlaylistUrl } from "@/lib/utils"
 
 interface PlaylistDialogProps {
   readonly open: boolean
@@ -32,31 +33,42 @@ export default function PlaylistDialog({ open, onOpenChange, onPlaylistAdded }: 
     setIsSubmitting(true)
     setError(null)
 
+    const cleanedUrl = cleanPlaylistUrl(url)
+
     try {
       const response = await fetch("/api/playlists/scrape", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ url }),
+        body: JSON.stringify({ url: cleanedUrl }),
       })
 
       const data = await response.json()
 
       if (!response.ok) {
-        throw new Error(data.error || "Failed to add playlist")
+        if (response.status === 409 || data.error === "Playlist already exists") {
+          toast.error("Playlist already exists")
+          setError(data.error)
+        } else {
+          toast.error("Error adding playlist")
+          setError(data.error || "Failed to add playlist")
+        }
+        return
       }
 
-      // Success - reset form and close dialog
+      toast.success("Playlist added!")
+      
       setUrl("")
       onOpenChange(false)
       
-      // Notify parent to refresh playlists
       if (onPlaylistAdded) {
         onPlaylistAdded()
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to add playlist")
+      const errorMessage = err instanceof Error ? err.message : "Failed to add playlist"
+      toast.error("Error adding playlist")
+      setError(errorMessage)
     } finally {
       setIsSubmitting(false)
     }
@@ -133,9 +145,6 @@ export default function PlaylistDialog({ open, onOpenChange, onPlaylistAdded }: 
                     />
                     <ExternalLink className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-black/20 dark:text-white/20" />
                   </div>
-                  {error && (
-                    <p className="mt-2 text-sm text-red-500 dark:text-red-400">{error}</p>
-                  )}
                 </div>
 
                 <button
