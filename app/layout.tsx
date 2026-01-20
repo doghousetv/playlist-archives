@@ -2,7 +2,10 @@ import type React from "react";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
+import { ToastContainer, Bounce } from "react-toastify";
 import { ThemeProvider } from "@/components/theme-provider";
+
+import "react-toastify/dist/ReactToastify.css";
 import "./globals.css";
 
 const _geist = Geist({ subsets: ["latin"] });
@@ -41,6 +44,18 @@ export default function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
           {children}
           <Analytics />
+          <ToastContainer
+            autoClose={3000}
+            hideProgressBar
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable={false}
+            pauseOnHover={false}
+            theme="colored"
+            transition={Bounce}
+          />
         </ThemeProvider>
       </body>
     </html>

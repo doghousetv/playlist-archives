@@ -87,6 +87,22 @@ export function generateRandomGradient(): string {
 }
 
 /**
+ * Remove query parameters from a URL
+ * @param url - The URL to clean
+ * @returns The URL without query parameters
+ */
+export function cleanPlaylistUrl(url: string): string {
+  try {
+    const urlObj = new URL(url.trim())
+    // Return URL without search params (query string)
+    return `${urlObj.origin}${urlObj.pathname}`
+  } catch {
+    // If URL parsing fails, return the original trimmed URL
+    return url.trim()
+  }
+}
+
+/**
  * Validate playlist URL for Spotify or Apple Music
  * @param url - The URL to validate
  * @returns Object with isValid boolean and error message if invalid

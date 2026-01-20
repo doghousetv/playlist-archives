@@ -2,6 +2,7 @@
 
 import { useState, useRef } from "react"
 import { Plus } from "lucide-react"
+import { useSWRConfig } from "swr"
 import PlaylistGrid from "@/components/playlist-grid"
 import PlaylistDialog from "@/components/playlist-dialog"
 import { Section, SectionHeader, SectionTitle, Container, AnimatedTextInView, Button } from "@/components/ui"
@@ -10,6 +11,7 @@ import { ANIMATION } from "@/lib/constants"
 export default function ArchiveSection() {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const refreshKeyRef = useRef(0)
+  const { mutate } = useSWRConfig()
 
   return (
     <Section 
@@ -54,6 +56,7 @@ export default function ArchiveSection() {
           onOpenChange={setIsDialogOpen}
           onPlaylistAdded={() => {
             refreshKeyRef.current += 1
+            mutate("/api/playlists/count")
           }}
         />
       </div>

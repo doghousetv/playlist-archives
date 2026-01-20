@@ -161,4 +161,53 @@
   .add-playlist-cover svg {
     display: none;
   }
+  
+  /* Toast container positioning */
+  .Toastify__toast-container {
+    /* Mobile: top-center */
+    top: 1rem !important;
+    left: 50% !important;
+    right: auto !important;
+    bottom: auto !important;
+    transform: translateX(-50%) !important;
+    width: calc(100% - 2rem) !important;
+    max-width: 400px !important;
+  }
+  
+  /* Desktop: bottom-right */
+  @media (min-width: 768px) {
+    .Toastify__toast-container {
+      top: auto !important;
+      left: auto !important;
+      right: 1rem !important;
+      bottom: 1rem !important;
+      transform: none !important;
+      width: 320px !important;
+    }
+  }
+  
+  /* Toast styling */
+  .Toastify__toast {
+    border-radius: 0.5rem;
+    font-family: inherit;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  }
+  
+  .Toastify__toast--success {
+    background: oklch(0.269 0 0);
+    color: oklch(0.985 0 0);
+  }
+  
+  .Toastify__toast--error {
+    background: oklch(0.396 0.141 25.723);
+    color: oklch(0.985 0 0);
+  }
+  
+  .Toastify__progress-bar--success {
+    background: oklch(0.696 0.17 162.48);
+  }
+  
+  .Toastify__progress-bar--error {
+    background: oklch(0.637 0.237 25.331);
+  }
 }
