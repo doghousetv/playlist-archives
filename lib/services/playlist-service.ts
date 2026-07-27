@@ -4,6 +4,10 @@ import { scrapePlaylistMetadata } from "./playlist-scraper"
 
 export interface CreatePlaylistInput {
   url: string
+  latitude?: number | null
+  longitude?: number | null
+  city?: string | null
+  country?: string | null
 }
 
 export interface CreatePlaylistResult {
@@ -16,6 +20,10 @@ export interface CreatePlaylistResult {
     curator: string | null
     coverImage: string | null
     gradient: string | null
+    latitude: number | null
+    longitude: number | null
+    city: string | null
+    country: string | null
   }
   error?: string
 }
@@ -49,11 +57,15 @@ export async function createPlaylistEntry(
       }
     }
 
-    // Create playlist with just URL and platform
+    // Create playlist with URL, platform, and (best-effort) submitter geolocation
     const playlist = await prisma.playlist.create({
       data: {
         url: input.url,
         platform,
+        latitude: input.latitude ?? null,
+        longitude: input.longitude ?? null,
+        city: input.city ?? null,
+        country: input.country ?? null,
       },
     })
 
@@ -67,6 +79,10 @@ export async function createPlaylistEntry(
         curator: playlist.curator,
         coverImage: playlist.coverImage,
         gradient: playlist.gradient,
+        latitude: playlist.latitude,
+        longitude: playlist.longitude,
+        city: playlist.city,
+        country: playlist.country,
       },
     }
   } catch (error) {

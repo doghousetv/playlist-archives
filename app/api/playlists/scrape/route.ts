@@ -3,6 +3,7 @@ import {
   createPlaylistEntry, 
   scrapeAndUpdatePlaylist 
 } from "@/lib/services/playlist-service"
+import { getGeoFromRequest } from "@/lib/services/geolocation"
 import { validatePlaylistUrl } from "@/lib/utils"
 
 export async function POST(request: NextRequest) {
@@ -26,8 +27,11 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // Resolve the submitter's approximate location (best-effort, never throws)
+    const geo = await getGeoFromRequest(request)
+
     // Create playlist entry in database
-    const createResult = await createPlaylistEntry({ url })
+    const createResult = await createPlaylistEntry({ url, ...geo })
     
     if (!createResult.success) {
       return NextResponse.json(
